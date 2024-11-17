@@ -33,7 +33,7 @@ const estilos = StyleSheet.create({
         backgroundColor: 'rgba(55, 39, 117, 1)',
         flexDirection: 'column',
         justifyContent: 'space-evenly',
-        alignItems: 'center'
+        alignItems: 'center',
     },
     textoPrincipal: {
         color: 'white',
