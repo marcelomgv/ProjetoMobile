@@ -4,7 +4,7 @@ import { Dimensions } from 'react-native'
 import { launchImageLibrary } from 'react-native-image-picker'
 import Icon from 'react-native-vector-icons/MaterialIcons'
 import DateTimePicker from '@react-native-community/datetimepicker'
-import { deleteDoc, getDoc, updateDoc } from 'firebase/firestore'
+import { deleteDoc, updateDoc } from 'firebase/firestore'
 
 const { width, height } = Dimensions.get('window')
 
