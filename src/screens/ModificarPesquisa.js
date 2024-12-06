@@ -4,6 +4,7 @@ import { Dimensions } from 'react-native'
 import { launchImageLibrary } from 'react-native-image-picker'
 import Icon from 'react-native-vector-icons/MaterialIcons'
 import DateTimePicker from '@react-native-community/datetimepicker'
+import { deleteDoc, getDoc, updateDoc } from 'firebase/firestore'
 
 const { width, height } = Dimensions.get('window')
 
@@ -54,8 +55,14 @@ const ModificarPesquisa = (props) => {
         }
     }
 
-    const salvar = () => {
-        props.navigation.navigate('Home')
+    const salvar = async () => {
+        const pesquisaRef = doc(db, 'pesquisaUsers', user.userId, 'pesquisas', pesquisa.pesquisaId)
+        updateDoc(pesquisaRef, {
+            nome: txtNome,
+            data: txtData,
+            imagem: imageUri
+        })
+        props.navigation.navigate('Drawer')
     }
 
     const apagar = () => {
@@ -63,7 +70,9 @@ const ModificarPesquisa = (props) => {
     }
 
     const confirmaApagar = () => {
-        props.navigation.navigate('Home')
+        const pesquisaRef = doc(db, 'pesquisaUsers', user.userId, 'pesquisas', pesquisa.pesquisaId)
+        deleteDoc(pesquisaRef)
+        props.navigation.navigate('Drawer')
     }
 
     const cancelar = () => {
