@@ -16,20 +16,33 @@ const ModificarPesquisa = (props) => {
     const [showPopup, setShowPopup] = useState(false)
     const [showDatePicker, setShowDatePicker] = useState(false)
 
-    const selecionaImagem = () => {
-        const options = {
-        mediaType: 'photo',
-        quality: 1,
-        }
+    const convertUriToBase64 = async (uri) => {
+        const resizedImage = await ImageResizer.createResizedImage(
+            uri,
+            400,
+            400,
+            'JPEG',
+            100
+        )
 
-        launchImageLibrary(options, (response) => {
-        if (response.didCancel) {
-            console.log('User cancelled image picker')
-        } else if (response.errorCode) {
-            console.log('ImagePicker Error: ', response.errorMessage);
-        } else if (response.assets && response.assets.length > 0) {
-            setImageUri(response.assets[0].uri)
+        const imageUri = await fetch(resizedImage.uri)
+        const imagemBlob = await imageUri.blob()
+        const reader = new FileReader()
+
+        reader.onloadend = () => {
+            setImageUri(reader.result)
         }
+        reader.readAsDataURL(imagemBlob)
+    }
+
+    const selecionaImagem = () => {
+        launchImageLibrary({ mediaType: 'photo' }, (result) => {
+            if (result.didCancel) {
+                return
+            }
+            else {
+                convertUriToBase64(result.assets[0].uri)
+            }
         })
     }
 
@@ -120,7 +133,7 @@ const ModificarPesquisa = (props) => {
                 </View>
                 
                 <View style={estilos.saveDelete}>
-                    <TouchableOpacity style={estilos.button} onPress={salvar}><Text style={estilos.texto}>SALVAR</Text></TouchableOpacity>
+                    <TouchableOpacity style={estilos.button} ><Text style={estilos.texto}>SALVAR</Text></TouchableOpacity>
                     <TouchableOpacity style={estilos.botaoApagar} onPress={apagar}>
                         <Icon name='delete' size={50} color={'#FFFFFF'}/>
                         <Text style={estilos.textoApagar}>Apagar</Text>
@@ -132,7 +145,7 @@ const ModificarPesquisa = (props) => {
                         <View style={estilos.popup}>
                             <Text style={estilos.textoPopup}>Tem certeza de apagar essa pesquisa?</Text>
                             <View style={estilos.popupBotoes} >
-                                <TouchableOpacity style={estilos.opSim} onPress={confirmaApagar}><Text style={estilos.texto}>SIM</Text></TouchableOpacity>
+                                <TouchableOpacity style={estilos.opSim} ><Text style={estilos.texto}>SIM</Text></TouchableOpacity>
                                 <TouchableOpacity style={estilos.opCanc} onPress={cancelar}><Text style={estilos.texto}>CANCELAR</Text></TouchableOpacity>
                             </View>    
                         </View>

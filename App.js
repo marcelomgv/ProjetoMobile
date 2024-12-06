@@ -16,6 +16,7 @@ const Stack = createStackNavigator()
 
 const App = () => {
   return (
+    <Provider store={store}>
       <NavigationContainer>
         <Stack.Navigator screenOptions={{ headerTintColor: '#573FBA', headerStyle: { backgroundColor: '#2B1D62' }, headerTitleStyle: { fontFamily: 'AveriaLibre-Regular', fontSize: 30, color: '#FFFFFF' } }}>
           <Stack.Screen name='Login' component={Login} options={{ headerShown: false }} />
@@ -29,6 +30,7 @@ const App = () => {
           <Stack.Screen name='Modificar Pesquisa' component={ModificarPesquisa} />
         </Stack.Navigator>
       </NavigationContainer>
+    </Provider>
   )
 }
 

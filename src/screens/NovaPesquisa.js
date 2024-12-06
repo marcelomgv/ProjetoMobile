@@ -23,8 +23,6 @@ const NovaPesquisa = (props) => {
     const userRef = doc(pesquisaCollection, 'caio')
     const pesquisaRef = collection(userRef, 'pesquisas')
 
-  
-
     const convertUriToBase64 = async (uri) => {
         const resizedImage = await ImageResizer.createResizedImage(
             uri,
