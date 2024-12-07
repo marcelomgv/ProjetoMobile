@@ -4,11 +4,14 @@ import { Dimensions } from 'react-native'
 import { launchImageLibrary } from 'react-native-image-picker'
 import Icon from 'react-native-vector-icons/MaterialIcons'
 import DateTimePicker from '@react-native-community/datetimepicker'
-import { deleteDoc, updateDoc } from 'firebase/firestore'
+import { initializeFirestore, deleteDoc, updateDoc } from 'firebase/firestore'
+import app from '../firebase/firebase'
+import { useSelector } from 'react-redux'
 
 const { width, height } = Dimensions.get('window')
 
 const ModificarPesquisa = (props) => {
+    const db = initializeFirestore(app, { experimentalForceLongPolling: true })
 
     const [txtNome, setNome] = useState('Carnaval 2024')
     const [txtData, setData] = useState('16/02/2024')

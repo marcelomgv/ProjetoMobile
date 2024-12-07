@@ -12,16 +12,15 @@ import { useSelector } from 'react-redux'
 const { width, height } = Dimensions.get('window')
 
 const NovaPesquisa = (props) => {
+    const db = initializeFirestore(app, { experimentalForceLongPolling: true })
+    const pesquisaCollection = collection(db, 'pesquisasUsers')
+    const userRef = doc(pesquisaCollection, 'caio')
+    const pesquisaRef = collection(userRef, 'pesquisas')
 
     const [txtNome, setNome] = useState('')
     const [txtData, setData] = useState('')
     const [imageUri, setImageUri] = useState(null)
     const [showDatePicker, setShowDatePicker] = useState(false)
-
-    const db = initializeFirestore(app, { experimentalForceLongPolling: true })
-    const pesquisaCollection = collection(db, 'pesquisasUsers')
-    const userRef = doc(pesquisaCollection, 'caio')
-    const pesquisaRef = collection(userRef, 'pesquisas')
 
     const convertUriToBase64 = async (uri) => {
         const resizedImage = await ImageResizer.createResizedImage(
