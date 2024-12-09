@@ -4,6 +4,7 @@ import { Dimensions } from 'react-native'
 import { launchImageLibrary } from 'react-native-image-picker'
 import Icon from 'react-native-vector-icons/MaterialIcons'
 import DateTimePicker from '@react-native-community/datetimepicker'
+import ImageResizer from 'react-native-image-resizer'
 import { initializeFirestore, deleteDoc, updateDoc } from 'firebase/firestore'
 import app from '../firebase/firebase'
 import { useSelector } from 'react-redux'
@@ -11,11 +12,17 @@ import { useSelector } from 'react-redux'
 const { width, height } = Dimensions.get('window')
 
 const ModificarPesquisa = (props) => {
+    const userId = useSelector((state) => state.login.userId)
+    const pesquisaId = useSelector((state) => state.pesquisa.pesquisaId)
+    const nome = useSelector((state) => state.pesquisa.nome)
+    const data = useSelector((state) => state.pesquisa.data)
+    const imagem = useSelector((state) => state.pesquisa.imagem)
+
     const db = initializeFirestore(app, { experimentalForceLongPolling: true })
 
-    const [txtNome, setNome] = useState('Carnaval 2024')
-    const [txtData, setData] = useState('16/02/2024')
-    const [imageUri, setImageUri] = useState('https://encrypted-tbn3.gstatic.com/images?q=tbn:ANd9GcRRmYhuOZEjVUKGkk2Ne2YXjmBx-4Duue3mrBrBYV4wLdmnQSQh')
+    const [txtNome, setNome] = useState(nome)
+    const [txtData, setData] = useState(data)
+    const [imageUri, setImageUri] = useState(imagem)
     const [showPopup, setShowPopup] = useState(false)
     const [showDatePicker, setShowDatePicker] = useState(false)
 
@@ -72,13 +79,17 @@ const ModificarPesquisa = (props) => {
     }
 
     const salvar = async () => {
-        const pesquisaRef = doc(db, 'pesquisaUsers', user.userId, 'pesquisas', pesquisa.pesquisaId)
+        if (txtNome == '' || txtData == '') {
+            return
+        }
+
+        const pesquisaRef = doc(db, 'pesquisaUsers', userId, 'pesquisas', pesquisaId)
         updateDoc(pesquisaRef, {
             nome: txtNome,
             data: txtData,
             imagem: imageUri
         })
-        props.navigation.navigate('Drawer')
+        props.navigation.pop(2)
     }
 
     const apagar = () => {
@@ -86,9 +97,9 @@ const ModificarPesquisa = (props) => {
     }
 
     const confirmaApagar = () => {
-        const pesquisaRef = doc(db, 'pesquisaUsers', user.userId, 'pesquisas', pesquisa.pesquisaId)
+        const pesquisaRef = doc(db, 'pesquisaUsers', userId, 'pesquisas', pesquisaId)
         deleteDoc(pesquisaRef)
-        props.navigation.navigate('Drawer')
+        props.navigation.pop(2)
     }
 
     const cancelar = () => {
@@ -136,7 +147,7 @@ const ModificarPesquisa = (props) => {
                 </View>
                 
                 <View style={estilos.saveDelete}>
-                    <TouchableOpacity style={estilos.button} ><Text style={estilos.texto}>SALVAR</Text></TouchableOpacity>
+                    <TouchableOpacity style={estilos.button} onPress={salvar}><Text style={estilos.texto}>SALVAR</Text></TouchableOpacity>
                     <TouchableOpacity style={estilos.botaoApagar} onPress={apagar}>
                         <Icon name='delete' size={50} color={'#FFFFFF'}/>
                         <Text style={estilos.textoApagar}>Apagar</Text>
@@ -148,7 +159,7 @@ const ModificarPesquisa = (props) => {
                         <View style={estilos.popup}>
                             <Text style={estilos.textoPopup}>Tem certeza de apagar essa pesquisa?</Text>
                             <View style={estilos.popupBotoes} >
-                                <TouchableOpacity style={estilos.opSim} ><Text style={estilos.texto}>SIM</Text></TouchableOpacity>
+                                <TouchableOpacity style={estilos.opSim} onPress={confirmaApagar}><Text style={estilos.texto}>SIM</Text></TouchableOpacity>
                                 <TouchableOpacity style={estilos.opCanc} onPress={cancelar}><Text style={estilos.texto}>CANCELAR</Text></TouchableOpacity>
                             </View>    
                         </View>
