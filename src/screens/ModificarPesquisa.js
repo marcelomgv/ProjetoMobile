@@ -5,13 +5,16 @@ import { launchImageLibrary } from 'react-native-image-picker'
 import Icon from 'react-native-vector-icons/MaterialIcons'
 import DateTimePicker from '@react-native-community/datetimepicker'
 import ImageResizer from 'react-native-image-resizer'
-import { initializeFirestore, deleteDoc, updateDoc } from 'firebase/firestore'
+import { initializeFirestore, deleteDoc, updateDoc, doc } from 'firebase/firestore'
 import app from '../firebase/firebase'
-import { useSelector } from 'react-redux'
+import { useDispatch, useSelector } from 'react-redux'
+import { reducerSetPesquisa } from '../redux/pesquisaSlice'
 
 const { width, height } = Dimensions.get('window')
 
-const ModificarPesquisa = (props) => {
+const ModificarPesquisa = (props) => {  
+    const dispatch = useDispatch()
+    
     const userId = useSelector((state) => state.login.userId)
     const pesquisaId = useSelector((state) => state.pesquisa.pesquisaId)
     const nome = useSelector((state) => state.pesquisa.nome)
@@ -72,24 +75,36 @@ const ModificarPesquisa = (props) => {
 
     const onDateChange = (event, selectedDate) => {
         setShowDatePicker(false)
+        
         if (selectedDate) {
             const date = selectedDate.toLocaleDateString()
             setData(date)
         }
     }
 
-    const salvar = async () => {
+    const salvar = () => {
         if (txtNome == '' || txtData == '') {
+            alert('Por favor, preencha todos os campos.')
             return
         }
 
         const pesquisaRef = doc(db, 'pesquisaUsers', userId, 'pesquisas', pesquisaId)
+        console.log('Caminho:', pesquisaRef.path);
+
         updateDoc(pesquisaRef, {
             nome: txtNome,
             data: txtData,
             imagem: imageUri
         })
-        props.navigation.pop(2)
+            .then(() => {
+                dispatch(reducerSetPesquisa({ nome: txtNome, data: txtData, imagem: imageUri }))
+                console.log('Pesquisa modificada')
+                props.navigation.pop(2)
+            })
+            .catch((error) => {
+                console.log('Erro ao modificar pesquisa:', error);
+                alert('Erro ao modificar pesquisa');
+            })
     }
 
     const apagar = () => {
@@ -98,8 +113,18 @@ const ModificarPesquisa = (props) => {
 
     const confirmaApagar = () => {
         const pesquisaRef = doc(db, 'pesquisaUsers', userId, 'pesquisas', pesquisaId)
+        console.log('Caminho:', pesquisaRef.path)
+
         deleteDoc(pesquisaRef)
-        props.navigation.pop(2)
+            .then(() => {
+                //dispatch(reducerSetPesquisa({ pesquisaId: '', nome: '', data: '', imagem: '' }))
+                console.log('Pesquisa excluida')
+                props.navigation.pop(2)
+            })
+            .catch((error) => {
+                console.log('Erro ao deletar pesquisa:', error)
+                alert('Erro ao deletar pesquisa')
+            })
     }
 
     const cancelar = () => {
@@ -120,7 +145,7 @@ const ModificarPesquisa = (props) => {
                     <View style={estilos.containerData}>
                         <TextInput style={estilos.dataInput} value={txtData} dataDetectorTypes={'calendarEvent'} keyboardType='numeric' onChangeText={formataData} />
                         <TouchableOpacity onPress={() => setShowDatePicker(true)}>
-                            <Icon name='event' size={40} color={'black'} style={{ opacity: 0.5 }}/>
+                            <Icon name='event' size={40} color={'black'} style={{ opacity: 0.5 }} />
                         </TouchableOpacity>
                     </View>
                     {!txtData && (<Text style={estilos.textoWarning}>Preencha a data</Text>)}
@@ -138,18 +163,18 @@ const ModificarPesquisa = (props) => {
                     <TouchableOpacity onPress={selecionaImagem}>
                         <View style={estilos.img}>
                             {imageUri ?
-                                (<Image source={{uri: imageUri}}/>)
-                            :
+                                (<Image source={{ uri: imageUri }} style={estilos.img} />)
+                                :
                                 (<Text style={estilos.textoImg}>Câmera/Galeria de imagens</Text>)
                             }
                         </View>
                     </TouchableOpacity>
                 </View>
-                
+
                 <View style={estilos.saveDelete}>
                     <TouchableOpacity style={estilos.button} onPress={salvar}><Text style={estilos.texto}>SALVAR</Text></TouchableOpacity>
                     <TouchableOpacity style={estilos.botaoApagar} onPress={apagar}>
-                        <Icon name='delete' size={50} color={'#FFFFFF'}/>
+                        <Icon name='delete' size={50} color={'#FFFFFF'} />
                         <Text style={estilos.textoApagar}>Apagar</Text>
                     </TouchableOpacity>
                 </View>
@@ -161,10 +186,10 @@ const ModificarPesquisa = (props) => {
                             <View style={estilos.popupBotoes} >
                                 <TouchableOpacity style={estilos.opSim} onPress={confirmaApagar}><Text style={estilos.texto}>SIM</Text></TouchableOpacity>
                                 <TouchableOpacity style={estilos.opCanc} onPress={cancelar}><Text style={estilos.texto}>CANCELAR</Text></TouchableOpacity>
-                            </View>    
+                            </View>
                         </View>
                     </View>
-                )}        
+                )}
             </View>
         </ScrollView>
     )
@@ -180,13 +205,13 @@ const estilos = StyleSheet.create({
         flexDirection: 'column',
         alignItems: 'center'
     },
-    componentes :{
+    componentes: {
         marginTop: width * 0.05
     },
     textoInput: {
         width: width * 0.8,
         height: height * 0.07,
-        backgroundColor:'#FFFFFF',
+        backgroundColor: '#FFFFFF',
         fontFamily: 'AveriaLibre-Regular',
         color: '#3F92C5',
         fontSize: 28,
@@ -195,7 +220,7 @@ const estilos = StyleSheet.create({
     dataInput: {
         flex: 1,
         height: height * 0.07,
-        backgroundColor:'#FFFFFF',
+        backgroundColor: '#FFFFFF',
         fontFamily: 'AveriaLibre-Regular',
         color: '#3F92C5',
         fontSize: 28,
@@ -206,7 +231,7 @@ const estilos = StyleSheet.create({
         height: height * 0.07,
         flexDirection: 'row',
         alignItems: 'center',
-        backgroundColor:'#FFFFFF',
+        backgroundColor: '#FFFFFF',
         paddingRight: width * 0.025
     },
     button: {
@@ -250,7 +275,7 @@ const estilos = StyleSheet.create({
     saveDelete: {
         width: width * 0.8,
         flexDirection: 'row',
-        justifyContent: 'space-between', 
+        justifyContent: 'space-between',
         alignItems: 'center'
     },
     botaoApagar: {
@@ -266,7 +291,7 @@ const estilos = StyleSheet.create({
     },
     bloqClick: {
         flex: 1,
-        top: 0, 
+        top: 0,
         bottom: 0,
         left: 0,
         right: 0,
@@ -288,7 +313,7 @@ const estilos = StyleSheet.create({
     opSim: {
         width: '45%',
         height: '70%',
-        backgroundColor: '#FF8383', 
+        backgroundColor: '#FF8383',
         justifyContent: 'center',
         alignItems: 'center'
     },
@@ -300,9 +325,9 @@ const estilos = StyleSheet.create({
         alignItems: 'center'
     },
     popupBotoes: {
-        flexDirection:'row',
+        flexDirection: 'row',
         width: '98%',
-        justifyContent:'space-around',
+        justifyContent: 'space-around',
         marginTop: '10%'
     }
 })

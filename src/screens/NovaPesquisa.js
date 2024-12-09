@@ -8,15 +8,18 @@ import ImageResizer from 'react-native-image-resizer'
 import { initializeFirestore, collection, addDoc, doc } from 'firebase/firestore'
 import app from '../firebase/firebase'
 import { useSelector } from 'react-redux'
+import { useDispatch } from 'react-redux'
+import { reducerSetPesquisa } from '../redux/pesquisaSlice'
 
 const { width, height } = Dimensions.get('window')
 
 const NovaPesquisa = (props) => {
+    const dispatch = useDispatch()
+
     const userId = useSelector((state) => state.login.userId)
 
     const db = initializeFirestore(app, { experimentalForceLongPolling: true })
-    const pesquisaCollection = collection(db, 'pesquisasUsers')
-    const userRef = doc(pesquisaCollection, userId)
+    const userRef = doc(db, 'pesquisasUsers', userId)
     const pesquisaRef = collection(userRef, 'pesquisas')
 
     const [txtNome, setNome] = useState('')
@@ -78,6 +81,7 @@ const NovaPesquisa = (props) => {
 
     const cadastrar = () => {
         if (txtNome == '' || txtData == '') {
+            alert('Por favor, preencha todos os campos.')
             return
         }
 
@@ -95,7 +99,8 @@ const NovaPesquisa = (props) => {
         }
 
         addDoc(pesquisaRef, docPesquisa)
-            .then(() => {
+            .then((docRef) => {
+                dispatch(reducerSetPesquisa({ pesquisaId: docRef.id, nome: txtNome, data: txtData, imagem: imageUri }))
                 props.navigation.goBack()
             })
             .catch((error) => {

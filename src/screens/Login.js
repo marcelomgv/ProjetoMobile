@@ -3,10 +3,14 @@ import { useState } from 'react';
 import { View, Text, TextInput, StyleSheet } from 'react-native';
 import TxtBtn from '../components/TxtBtn';
 import Icon from 'react-native-vector-icons/MaterialIcons';
-import { signInWithEmailAndPassword } from 'firebase/auth';
+import { signInWithEmailAndPassword, getAuth } from 'firebase/auth';
 import { auth_mod } from '../firebase/firebase';
+import { reducerSetLogin } from '../redux/loginSlice';
+import { useDispatch } from 'react-redux';
 
 const Login = (props) => {
+
+  const dispatch = useDispatch()
 
   const [email, setEmail] = useState('');
   const [senha, setSenha] = useState('');
@@ -26,8 +30,14 @@ const Login = (props) => {
   };
 
   const goToHome = () => {
-    props.navigation.navigate('Drawer');
+    const auth = getAuth();
+    const user = auth.currentUser;
+    if (user) {
+      dispatch(reducerSetLogin({ userId: user.uid, email: email }));
 
+      // Navegar para a tela "Drawer"
+      props.navigation.navigate('Drawer');
+    }
   };
 
   const goToRecSenha = () => {
