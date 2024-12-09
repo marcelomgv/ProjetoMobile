@@ -7,14 +7,11 @@ import DateTimePicker from '@react-native-community/datetimepicker'
 import ImageResizer from 'react-native-image-resizer'
 import { initializeFirestore, deleteDoc, updateDoc, doc } from 'firebase/firestore'
 import app from '../firebase/firebase'
-import { useDispatch, useSelector } from 'react-redux'
-import { reducerSetPesquisa } from '../redux/pesquisaSlice'
+import { useSelector } from 'react-redux'
 
 const { width, height } = Dimensions.get('window')
 
-const ModificarPesquisa = (props) => {  
-    const dispatch = useDispatch()
-    
+const ModificarPesquisa = (props) => {
     const userId = useSelector((state) => state.login.userId)
     const pesquisaId = useSelector((state) => state.pesquisa.pesquisaId)
     const nome = useSelector((state) => state.pesquisa.nome)
@@ -60,25 +57,28 @@ const ModificarPesquisa = (props) => {
     }
 
     const formataData = (data) => {
-        const textoLimpo = data.replace(/\D/g, '');
+        const textoLimpo = data.replace(/\D/g, '')
+        let textoFormatado = textoLimpo
 
-        let textoFormatado = textoLimpo;
         if (textoLimpo.length >= 3) {
-            textoFormatado = `${textoLimpo.slice(0, 2)}/${textoLimpo.slice(2, 4)}`;
+            textoFormatado = `${textoLimpo.slice(0, 2)}/${textoLimpo.slice(2, 4)}`
         }
         if (textoLimpo.length >= 5) {
-            textoFormatado = `${textoLimpo.slice(0, 2)}/${textoLimpo.slice(2, 4)}/${textoLimpo.slice(4, 8)}`;
+            textoFormatado = `${textoLimpo.slice(0, 2)}/${textoLimpo.slice(2, 4)}/${textoLimpo.slice(4, 8)}`
         }
 
-        setData(textoFormatado);
+        setData(textoFormatado)
     }
 
     const onDateChange = (event, selectedDate) => {
         setShowDatePicker(false)
-        
+
         if (selectedDate) {
-            const date = selectedDate.toLocaleDateString()
-            setData(date)
+            const dia = selectedDate.getDate().toString().padStart(2, '0')
+            const mes = (selectedDate.getMonth() + 1).toString().padStart(2, '0')
+            const ano = selectedDate.getFullYear()
+            const dataFormatada = `${dia}/${mes}/${ano}`
+            setData(dataFormatada)
         }
     }
 
@@ -88,8 +88,7 @@ const ModificarPesquisa = (props) => {
             return
         }
 
-        const pesquisaRef = doc(db, 'pesquisaUsers', userId, 'pesquisas', pesquisaId)
-        console.log('Caminho:', pesquisaRef.path);
+        const pesquisaRef = doc(db, 'pesquisasUsers', userId, 'pesquisas', pesquisaId)
 
         updateDoc(pesquisaRef, {
             nome: txtNome,
@@ -97,8 +96,6 @@ const ModificarPesquisa = (props) => {
             imagem: imageUri
         })
             .then(() => {
-                dispatch(reducerSetPesquisa({ nome: txtNome, data: txtData, imagem: imageUri }))
-                console.log('Pesquisa modificada')
                 props.navigation.pop(2)
             })
             .catch((error) => {
@@ -112,13 +109,10 @@ const ModificarPesquisa = (props) => {
     }
 
     const confirmaApagar = () => {
-        const pesquisaRef = doc(db, 'pesquisaUsers', userId, 'pesquisas', pesquisaId)
-        console.log('Caminho:', pesquisaRef.path)
+        const pesquisaRef = doc(db, 'pesquisasUsers', userId, 'pesquisas', pesquisaId)
 
         deleteDoc(pesquisaRef)
             .then(() => {
-                //dispatch(reducerSetPesquisa({ pesquisaId: '', nome: '', data: '', imagem: '' }))
-                console.log('Pesquisa excluida')
                 props.navigation.pop(2)
             })
             .catch((error) => {

@@ -8,19 +8,14 @@ import ImageResizer from 'react-native-image-resizer'
 import { initializeFirestore, collection, addDoc, doc } from 'firebase/firestore'
 import app from '../firebase/firebase'
 import { useSelector } from 'react-redux'
-import { useDispatch } from 'react-redux'
-import { reducerSetPesquisa } from '../redux/pesquisaSlice'
 
 const { width, height } = Dimensions.get('window')
 
 const NovaPesquisa = (props) => {
-    const dispatch = useDispatch()
-
     const userId = useSelector((state) => state.login.userId)
 
     const db = initializeFirestore(app, { experimentalForceLongPolling: true })
-    const userRef = doc(db, 'pesquisasUsers', userId)
-    const pesquisaRef = collection(userRef, 'pesquisas')
+    const pesquisaRef = collection(db, 'pesquisasUsers', userId, 'pesquisas')
 
     const [txtNome, setNome] = useState('')
     const [txtData, setData] = useState('')
@@ -58,24 +53,28 @@ const NovaPesquisa = (props) => {
     }
 
     const formataData = (data) => {
-        const textoLimpo = data.replace(/\D/g, '');
+        const textoLimpo = data.replace(/\D/g, '')
+        let textoFormatado = textoLimpo
 
-        let textoFormatado = textoLimpo;
         if (textoLimpo.length >= 3) {
-            textoFormatado = `${textoLimpo.slice(0, 2)}/${textoLimpo.slice(2, 4)}`;
+            textoFormatado = `${textoLimpo.slice(0, 2)}/${textoLimpo.slice(2, 4)}`
         }
         if (textoLimpo.length >= 5) {
-            textoFormatado = `${textoLimpo.slice(0, 2)}/${textoLimpo.slice(2, 4)}/${textoLimpo.slice(4, 8)}`;
+            textoFormatado = `${textoLimpo.slice(0, 2)}/${textoLimpo.slice(2, 4)}/${textoLimpo.slice(4, 8)}`
         }
 
-        setData(textoFormatado);
+        setData(textoFormatado)
     }
 
     const onDateChange = (event, selectedDate) => {
         setShowDatePicker(false)
+        
         if (selectedDate) {
-            const date = selectedDate.toLocaleDateString()
-            setData(date)
+            const dia = selectedDate.getDate().toString().padStart(2, '0')
+            const mes = (selectedDate.getMonth() + 1).toString().padStart(2, '0')
+            const ano = selectedDate.getFullYear()
+            const dataFormatada = `${dia}/${mes}/${ano}`
+            setData(dataFormatada)
         }
     }
 
@@ -99,8 +98,7 @@ const NovaPesquisa = (props) => {
         }
 
         addDoc(pesquisaRef, docPesquisa)
-            .then((docRef) => {
-                dispatch(reducerSetPesquisa({ pesquisaId: docRef.id, nome: txtNome, data: txtData, imagem: imageUri }))
+            .then(() => {
                 props.navigation.goBack()
             })
             .catch((error) => {
