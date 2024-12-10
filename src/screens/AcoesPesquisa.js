@@ -25,7 +25,7 @@ const AcoesPesquisa = (props) => {
         <View style = {estilos.inferior}>
           <Icones texto = 'Modificar' icone = 'edit' cor = 'white' tela='AcoesPesquisa' funcao={goToModificarPesquisa}/>
           <Icones texto = 'Coletar dados' icone = 'library-add-check' cor = 'white' tela='AcoesPesquisa' funcao={goToColeta}/>
-          <Icones texto = 'Relatório' icone = 'donut-large' cor = 'white' tela='AcoesPesquisa' funcao={goToColeta}/>
+          <Icones texto = 'Relatório' icone = 'donut-large' cor = 'white' tela='AcoesPesquisa' funcao={goToRelatorio}/>
         </View>
       </View>
     )
