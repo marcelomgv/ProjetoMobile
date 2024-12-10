@@ -1,8 +1,7 @@
-import React from 'react';
-import {View, StyleSheet, Text} from 'react-native';
-import {PieChart} from 'react-native-svg-charts';
+import React from 'react'
+import {View, StyleSheet, Text} from 'react-native'
 
-import Header from '../components/Header';
+import Header from '../components/Header'
 
 const Relatorio = (props) => {
   const data = [
@@ -38,13 +37,7 @@ const Relatorio = (props) => {
     <View style={estilos.container}>
       <Header texto="Relatório" onPress={() => props.navigation.goBack()} />
       <View style={estilos.relatorioContainer}>
-        <PieChart
-          style={estilos.pieChart}
-          outerRadius={'83%'}
-          innerRadius={'10%'}
-          data={data}
-          padAngle={0}
-        />
+        
 
         <View style={estilos.legendaContainer}>
           {data.map((item, index) => (

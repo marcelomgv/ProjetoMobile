@@ -2,7 +2,7 @@ import { useState, useEffect } from "react";
 import { View, Text, TextInput, ScrollView, TouchableOpacity, StyleSheet, FlatList } from "react-native";
 import Icon from 'react-native-vector-icons/MaterialIcons'
 import Pesquisa from "../components/Pesquisa";
-import { getFirestore, initializeFirestore, collection, onSnapshot, doc, query } from 'firebase/firestore'
+import { initializeFirestore, collection, onSnapshot, doc } from 'firebase/firestore'
 import app from '../firebase/firebase'
 import { useSelector } from "react-redux";
 
@@ -57,7 +57,7 @@ const Home = (props) => {
 
                 <FlatList data={ListaPesquisas} renderItem={itemPesquisa}
                     keyExtractor={pesquisa => pesquisa.pesquisaId}
-                    contentContainerStyle={{ flexGrow: 1, justifyContent: 'center' }} 
+                    contentContainerStyle={{ flexGrow: 1, justifyContent: 'center' }}
                     style={estilo.Pesquisas} horizontal={true} />
 
                 <View id="NovaPesquisa" style={estilo.NovaPesquisa}>
@@ -103,7 +103,7 @@ const estilo = StyleSheet.create({
         flex: 0.6,
         width: '80%',
         height: '100%',
-        horizontal : 'true',
+        horizontal: 'true',
         paddingTop: 30
     },
 
