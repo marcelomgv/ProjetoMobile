@@ -13,6 +13,7 @@ import Home from './src/screens/Home'
 import NovaPesquisa from './src/screens/NovaPesquisa'
 import ModificarPesquisa from './src/screens/ModificarPesquisa'
 import Agradecimento from './src/screens/Agradecimento'
+import Relatorio from './src/screens/Relatorio'
 
 const Stack = createStackNavigator()
 
@@ -31,6 +32,7 @@ const App = () => {
           <Stack.Screen name='Nova Pesquisa' component={NovaPesquisa} />
           <Stack.Screen name='Modificar Pesquisa' component={ModificarPesquisa} />
           <Stack.Screen name='Agradecimento' component={Agradecimento} options={{ headerShown: false }} />
+          <Stack.Screen name='Relatório' component={Relatorio} options={{ headerShown: false }} />
         </Stack.Navigator>
       </NavigationContainer>
     </Provider>
