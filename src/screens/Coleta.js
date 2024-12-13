@@ -3,6 +3,7 @@ import {Pressable, StyleSheet, Text, View} from 'react-native';
 import Icones from '../components/Icones';
 import {useDispatch} from 'react-redux';
 import {incrementarColeta} from '../redux/pesquisaSlice';
+import { useSelector } from 'react-redux';
 
 const Coleta = props => {
   const dispatch = useDispatch();
@@ -15,6 +16,7 @@ const Coleta = props => {
     // Navega para a tela de agradecimento
     props.navigation.navigate('Agradecimento');
   };
+  const nomePesq = useSelector((state) => state.pesquisa.nome)
   return (
         <View style={estilos.principal}>
             <View style = {estilos.header}>
@@ -22,7 +24,7 @@ const Coleta = props => {
                 </Pressable>
             </View>
             <Text style={estilos.textoPrincipal}>
-                O que você achou do Carnaval 2024?
+                O que você achou de {nomePesq}?
             </Text>
             <View style={estilos.opcoes}>
                 <Icones
