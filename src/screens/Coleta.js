@@ -8,7 +8,7 @@ import { useSelector } from 'react-redux';
 const Coleta = props => {
   const dispatch = useDispatch();
   const goToAcoesPesquisa = () => {
-    props.navigation.navigate('Carnaval');
+    props.navigation.navigate('AcoesPesquisa');
   };
   const goToAgradecimento = categoria => {
     // Dispara a ação para atualizar o Redux
