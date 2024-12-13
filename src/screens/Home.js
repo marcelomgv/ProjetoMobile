@@ -1,10 +1,12 @@
 import { useState, useEffect } from "react";
-import { View, Text, TextInput, ScrollView, TouchableOpacity, StyleSheet, FlatList } from "react-native";
+import { View, Text, TextInput, TouchableOpacity, StyleSheet, FlatList } from "react-native";
 import Icon from 'react-native-vector-icons/MaterialIcons'
 import Pesquisa from "../components/Pesquisa";
 import { initializeFirestore, collection, onSnapshot, doc } from 'firebase/firestore'
 import app from '../firebase/firebase'
-import { useSelector } from "react-redux";
+import { useSelector , useDispatch} from "react-redux";
+import { reducerSetPesquisa } from "../redux/pesquisaSlice";
+
 
 const Home = (props) => {
 
@@ -12,6 +14,8 @@ const Home = (props) => {
     const db = initializeFirestore(app, { experimentalForceLongPolling: true })
     const PesquisasUsers = collection(doc(db, 'pesquisasUsers', userId), 'pesquisas');
     const [ListaPesquisas, setListaPesquisas] = useState([])
+    
+    const dispatch = useDispatch()
 
     const [busca, setBusca] = useState('Insira o termo de busca...')
 
@@ -19,8 +23,11 @@ const Home = (props) => {
         props.navigation.navigate('Nova Pesquisa')
     }
 
-    const goToAcoesPesquisa = () => {
-        props.navigation.navigate('Carnaval')
+    const goToAcoesPesquisa = (pesquisaId, nome, data, img, coleta) => {
+        const pesquisa = { pesquisaId, nome, data, imagem: img, coleta: coleta };
+        console.log("Dados sendo enviados ao Redux:", pesquisa); // Teste
+        dispatch(reducerSetPesquisa(pesquisa));
+        props.navigation.navigate('AcoesPesquisa');
     }
 
     useEffect(() => {
@@ -38,7 +45,8 @@ const Home = (props) => {
 
     const itemPesquisa = ({ item }) => {
         return (
-            <Pesquisa nome={item.nome} data={item.data} img={item.img} onPress={goToAcoesPesquisa}></Pesquisa>
+            <Pesquisa nome={item.nome} data={item.data} img={item.img} 
+            onPress={()=>goToAcoesPesquisa(item.pesquisaId, item.nome, item.data, item.img, item.coleta)}></Pesquisa>
         )
     }
 
@@ -56,8 +64,8 @@ const Home = (props) => {
                 </View>
 
                 <FlatList data={ListaPesquisas} renderItem={itemPesquisa}
-                    keyExtractor={pesquisa => pesquisa.pesquisaId}
-                    contentContainerStyle={{ flexGrow: 1, justifyContent: 'center' }}
+                    keyExtractor={(item) => item.pesquisaId}
+                    contentContainerStyle={{ flexGrow: 1, justifyContent: 'center' }} 
                     style={estilo.Pesquisas} horizontal={true} />
 
                 <View id="NovaPesquisa" style={estilo.NovaPesquisa}>
@@ -103,7 +111,7 @@ const estilo = StyleSheet.create({
         flex: 0.6,
         width: '80%',
         height: '100%',
-        horizontal: 'true',
+        horizontal : 'true',
         paddingTop: 30
     },
 

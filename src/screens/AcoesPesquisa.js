@@ -1,5 +1,6 @@
 import { StyleSheet, Text, TouchableOpacity, View } from "react-native";
 import Icones from "../components/Icones";
+import { useSelector } from "react-redux";
 
 //Library Add Check
 //donut large
@@ -15,6 +16,8 @@ const AcoesPesquisa = (props) => {
     const goToRelatorio = () => {
       props.navigation.navigate('Relatorio')
     }
+    const nomePesq = useSelector((state) => state.pesquisa.nome)
+    props.navigation.setOptions({ title: nomePesq})
     return(
             /*
             <View style = {estilos.header}>
