@@ -7,13 +7,13 @@ import Icones from "../components/Icones";
 const AcoesPesquisa = (props) => {
 
     const goToColeta = () => {
-        props.navigation.navigate('Coleta')
+      props.navigation.navigate('Coleta')
     }
     const goToModificarPesquisa = () => {
       props.navigation.navigate('Modificar Pesquisa')
     }
     const goToRelatorio = () => {
-      props.navigation.navigate('Relatório')
+      props.navigation.navigate('Relatorio')
     }
     return(
             /*
