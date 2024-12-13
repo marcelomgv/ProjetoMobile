@@ -6,36 +6,36 @@ import Icones from "../components/Icones";
 
 const AcoesPesquisa = (props) => {
 
-    const goToColeta = () => {
-      props.navigation.navigate('Coleta')
-    }
-    const goToModificarPesquisa = () => {
-      props.navigation.navigate('Modificar Pesquisa')
-    }
-    const goToRelatorio = () => {
-      props.navigation.navigate('Relatorio')
-    }
-    return(
-            /*
-            <View style = {estilos.header}>
-                <Text style = {estilos.headerText}>Carnaval</Text>
-            </View>
-            */
-      <View style={estilos.principal}>     
-        <View style = {estilos.inferior}>
-          <Icones texto = 'Modificar' icone = 'edit' cor = 'white' tela='AcoesPesquisa' funcao={goToModificarPesquisa}/>
-          <Icones texto = 'Coletar dados' icone = 'library-add-check' cor = 'white' tela='AcoesPesquisa' funcao={goToColeta}/>
-          <Icones texto = 'Relatório' icone = 'donut-large' cor = 'white' tela='AcoesPesquisa' funcao={goToRelatorio}/>
-        </View>
+  const goToColeta = () => {
+    props.navigation.navigate('Coleta')
+  }
+  const goToModificarPesquisa = () => {
+    props.navigation.navigate('Modificar Pesquisa')
+  }
+  const goToRelatorio = () => {
+    props.navigation.navigate('Relatorio')
+  }
+  return (
+    /*
+    <View style={estilos.header}>
+      <Text style={estilos.headerText}>Carnaval</Text>
+    </View>
+    */
+    <View style={estilos.principal}>
+      <View style={estilos.inferior}>
+        <Icones texto='Modificar' icone='edit' cor='white' tela='AcoesPesquisa' funcao={goToModificarPesquisa} />
+        <Icones texto='Coletar dados' icone='library-add-check' cor='white' tela='AcoesPesquisa' funcao={goToColeta} />
+        <Icones texto='Relatório' icone='donut-large' cor='white' tela='AcoesPesquisa' funcao={goToRelatorio} />
       </View>
-    )
+    </View>
+  )
 }
 
 const estilos = StyleSheet.create({
-  principal:{
+  principal: {
     flex: 1
   },
-  header:{
+  header: {
     flexDirection: 'column',
     justifyContent: 'center',
     backgroundColor: 'rgba(43, 29, 98, 1)',
@@ -50,10 +50,10 @@ const estilos = StyleSheet.create({
     backgroundColor: 'rgba(55, 39, 117, 1)',
     flexDirection: 'row',
     justifyContent: 'space-evenly',
-    alignItems:'center'
+    alignItems: 'center'
   },
-  textIcones:{
-    color:'white',
+  textIcones: {
+    color: 'white',
     fontSize: 28
   }
 })
